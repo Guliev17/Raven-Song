@@ -5,9 +5,9 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 # ----------------- CONFIG -----------------
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = 123456789           # <-- Öz Telegram ID
-CHANNEL_ID = "@my_music_dump"  # <-- Kanal username / id
+BOT_TOKEN = os.getenv("8241184917:AAEZ6dzXAGDlhUMW1kRW5eazwGH_BSbhW1A")
+ADMIN_ID =    5671408492       # <-- Öz Telegram ID
+CHANNEL_ID = "@GulievSong"  # <-- Kanal username / id
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
@@ -57,14 +57,14 @@ async def start(message: types.Message):
     # Admina bildiriş
     await bot.send_message(
         ADMIN_ID,
-        f"🚀 Yeni user\n👤 {user.full_name}\n🆔 {user.id}"
+        f"🚀 Start verdi\n👤 {user.full_name}\n🆔 {user.id}"
     )
     await message.answer(
-        "🎵 Music Downloader Bot\n\n"
+        "🎵 Salam! Mən 𝑮𝒖𝒍𝒊𝒆𝒗 𝑺𝒐𝒏𝒈 🪢 istifadə qaydaları:\n\n"
         "• Mahnı adı yaz\n"
         "• YouTube / Spotify link at\n"
         "• Keyfiyyət seç (128/320 kbps)\n"
-        "• Maqnit kimi musiqi kanalımıza gedəcək"
+        "• Owner: @quliyevv_17 Reklam və iş birliyi üçün yaza bilərsən..✅"
     )
 
 @dp.message_handler(commands=["stats"])
@@ -114,7 +114,7 @@ async def handle(message: types.Message):
 @dp.callback_query_handler(lambda c: c.data.startswith("dl"))
 async def download(call: types.CallbackQuery):
     _, quality, query, user_name = call.data.split("|", 3)
-    await call.message.edit_text("⏳ Yüklənir...")
+    await call.message.edit_text("Yüklənir...📥")
 
     source = query if "http" in query else f"ytsearch1:{query}"
 
@@ -156,7 +156,7 @@ async def download(call: types.CallbackQuery):
             os.remove(f)
 
     except Exception as e:
-        await call.message.answer("❌ Xəta baş verdi")
+        await call.message.answer("Xəta baş verdi❌ Yenidən cəhd et🔄")
 
 # ----------------- RUN -----------------
 if __name__ == "__main__":
