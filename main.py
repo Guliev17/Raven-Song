@@ -172,3 +172,6 @@ async def download(call: types.CallbackQuery):
 
     except Exception as e:
         await call.message.answer("Xəta baş verdi❌ Yenidən cəhd et🔄")
+
+if __name__ == "__main__":
+    executor.start_polling(dp, skip_updates=True)
