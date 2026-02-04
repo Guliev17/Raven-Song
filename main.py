@@ -119,16 +119,17 @@ async def download(call: types.CallbackQuery):
     _, quality, query, user_name = call.data.split("|", 3)
     await call.message.edit_text("Yüklənir...📥")
 
-    # Həmişə ytsearch – YouTube bot check-dən qaçmaq üçün
+    # Həmişə ytsearch, link və Spotify bypass
     source = f"ytsearch1:{query}"
 
     try:
+        # yt-dlp
         subprocess.run(
             [
                 "yt-dlp",
                 "-x",
                 "--audio-format", "mp3",
-                "--audio-quality", "0" if quality == "320" else "5",
+                "--audio-quality", "0" if quality=="320" else "5",
                 "--write-thumbnail",
                 "--print-json",
                 "--geo-bypass",
@@ -138,40 +139,44 @@ async def download(call: types.CallbackQuery):
                 source
             ],
             check=True,
-            stdout=open("info.json", "w"),
+            stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
 
-        info = json.load(open("info.json", "r", encoding="utf-8"))
-
+        # Metadata
+        info = json.load(open("info.json", encoding="utf-8"))
         title = info.get("title", "Unknown")
         artist = info.get("artist") or info.get("uploader", "Unknown")
 
         caption = f"🎧 {title}\n👤 {artist}\n💿 {quality} kbps\n\nSifariş verən: {user_name}"
 
-        # ---------- USER ----------
+        # User-ə göndər
         await bot.send_audio(
             call.message.chat.id,
             audio=open("music.mp3", "rb"),
             caption=caption
         )
 
-        # ---------- CHANNEL ----------
+        # Kanal göndər (thumb optional)
+        thumb_path = "music.jpg"
+        if not os.path.exists(thumb_path):
+            thumb_path = None
+
         await bot.send_audio(
             CHANNEL_ID,
             audio=open("music.mp3", "rb"),
-            caption=caption
+            caption=caption,
+            thumb=open(thumb_path, "rb") if thumb_path else None
         )
 
         add_download()
 
-        # Təmizlik
+        # Faylları sil
         for f in ["music.mp3", "info.json", "music.jpg", "music.webp"]:
             if os.path.exists(f):
                 os.remove(f)
 
     except Exception as e:
-        await call.message.answer("Xəta baş verdi❌ Yenidən cəhd et🔄")
-
+        await call.message.answer(f"Xəta baş verdi❌\n{e}\nYenidən cəhd et🔄")
 if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
