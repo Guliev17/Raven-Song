@@ -123,15 +123,18 @@ async def download(call: types.CallbackQuery):
 
     try:
         subprocess.run([
-            "yt-dlp",
-            "-x",
-            "--audio-format", "mp3",
-            "--audio-quality", "0" if quality == "320" else "5",
-            "--write-thumbnail",
-            "--print-json",
-            "-o", "music",
-            source
-        ], check=True, stdout=open("info.json", "w"))
+    "yt-dlp",
+    "-x",
+    "--audio-format", "mp3",
+    "--audio-quality", "0" if quality == "320" else "5",
+    "--write-thumbnail",
+    "--print-json",
+    "--geo-bypass",
+    "--no-check-certificate",
+    "--user-agent", "Mozilla/5.0",
+    "-o", "music.%(ext)s",
+    source
+], check=True, stdout=open("info.json", "w"))
 
         info = json.load(open("info.json"))
         title = info.get("title")
