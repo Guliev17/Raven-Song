@@ -44,10 +44,13 @@ def get_all_users():
     return [row[0] for row in cur.fetchall()]
 
 # ----------------- SPOTIFY -----------------
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
-    client_id=SPOTIFY_CLIENT_ID,
-    client_secret=SPOTIFY_CLIENT_SECRET
-))
+# import spotipy
+# from spotipy.oauth2 import SpotifyClientCredentials
+
+# sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(
+#     client_id=SPOTIFY_CLIENT_ID,
+#     client_secret=SPOTIFY_CLIENT_SECRET
+# ))
 
 # ----------------- COMMANDS -----------------
 @dp.message_handler(commands=["start"])
