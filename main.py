@@ -5,7 +5,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 # ----------------- CONFIG -----------------
-BOT_TOKEN = os.getenv("8241184917:AAEZ6dzXAGDlhUMW1kRW5eazwGH_BSbhW1A")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID =    5671408492       # <-- Öz Telegram ID
 CHANNEL_ID = "@GulievSong"  # <-- Kanal username / id
 SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
