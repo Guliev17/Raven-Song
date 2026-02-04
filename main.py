@@ -119,7 +119,7 @@ async def download(call: types.CallbackQuery):
     _, quality, query, user_name = call.data.split("|", 3)
     await call.message.edit_text("Yüklənir...📥")
 
-    source = query if "http" in query else f"ytsearch1:{query}"
+    source = f"ytsearch1:{query}"
 
     try:
         subprocess.run([
