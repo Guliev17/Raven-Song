@@ -119,51 +119,56 @@ async def download(call: types.CallbackQuery):
     _, quality, query, user_name = call.data.split("|", 3)
     await call.message.edit_text("Yüklənir...📥")
 
+    # Həmişə ytsearch – YouTube bot check-dən qaçmaq üçün
     source = f"ytsearch1:{query}"
 
     try:
-        subprocess.run([
-    "yt-dlp",
-    "-x",
-    "--audio-format", "mp3",
-    "--audio-quality", "0" if quality == "320" else "5",
-    "--write-thumbnail",
-    "--print-json",
-    "--geo-bypass",
-    "--no-check-certificate",
-    "--user-agent", "Mozilla/5.0",
-    "-o", "music.%(ext)s",
-    source
-], check=True, stdout=open("info.json", "w"))
+        subprocess.run(
+            [
+                "yt-dlp",
+                "-x",
+                "--audio-format", "mp3",
+                "--audio-quality", "0" if quality == "320" else "5",
+                "--write-thumbnail",
+                "--print-json",
+                "--geo-bypass",
+                "--no-check-certificate",
+                "--user-agent", "Mozilla/5.0",
+                "-o", "music.%(ext)s",
+                source
+            ],
+            check=True,
+            stdout=open("info.json", "w"),
+            stderr=subprocess.DEVNULL
+        )
 
-        info = json.load(open("info.json"))
-        title = info.get("title")
-        artist = info.get("artist") or info.get("uploader")
+        info = json.load(open("info.json", "r", encoding="utf-8"))
+
+        title = info.get("title", "Unknown")
+        artist = info.get("artist") or info.get("uploader", "Unknown")
+
         caption = f"🎧 {title}\n👤 {artist}\n💿 {quality} kbps\n\nSifariş verən: {user_name}"
 
-        # User-ə göndər
+        # ---------- USER ----------
         await bot.send_audio(
             call.message.chat.id,
             audio=open("music.mp3", "rb"),
-            thumb=open("music.jpg", "rb"),
             caption=caption
         )
 
-        # Kanala göndər
+        # ---------- CHANNEL ----------
         await bot.send_audio(
             CHANNEL_ID,
             audio=open("music.mp3", "rb"),
-            thumb=open("music.jpg", "rb"),
             caption=caption
         )
 
         add_download()
-        for f in ["music.mp3", "music.jpg", "info.json"]:
-            os.remove(f)
+
+        # Təmizlik
+        for f in ["music.mp3", "info.json", "music.jpg", "music.webp"]:
+            if os.path.exists(f):
+                os.remove(f)
 
     except Exception as e:
         await call.message.answer("Xəta baş verdi❌ Yenidən cəhd et🔄")
-
-# ----------------- RUN -----------------
-if __name__ == "__main__":
-    executor.start_polling(dp)
